@@ -4,13 +4,14 @@ import { Album } from './album.model';
 import { GenrePipe } from './genre.pipe';
 import { ArtistPipe } from './artist.pipe';
 import { NewAlbumComponent } from './new-album.component';
+import { ShoppingCartComponent } from './shopping-cart.component';
 
 @Component({
   selector: 'album-list',
   inputs: ['albumList'],
 
   pipes: [GenrePipe, ArtistPipe],
-  directives: [AlbumComponent, NewAlbumComponent],
+  directives: [AlbumComponent, NewAlbumComponent, ShoppingCartComponent],
   template: `
   <select (change)="onGenreChange($event.target.value)" class="filter">
     <option value="all" selected="selected">Show All</option>
@@ -23,8 +24,9 @@ import { NewAlbumComponent } from './new-album.component';
     <option value="all" selected="selected">Show All</option>
     <option *ngFor="#i of albumList">{{i.artist}}</option>
   </select>
+  <shopping-cart ></shopping-cart>
     <album-display *ngFor="#currentAlbum of albumList | genre:filterGenre | artist: filterArtist:artistList"
-    [album]="currentAlbum"></album-display>
+    [album]="currentAlbum" (addToCart) = "cartTotalUpdate($event)"></album-display>
     <new-album (onSubmitNewAlbum) = "createAlbum($event[0], $event[1], $event[2], $event[3])"></new-album>
   `
 })
@@ -32,6 +34,12 @@ export class AlbumListComponent {
   public albumList: Album[];
   public filterGenre: "all";
   public filterArtist: "all";
+  public cartTotal: number = 0;
+
+  cartTotalUpdate(amount: number) {
+    this.cartTotal += amount;
+    console.log(this.cartTotal);
+  }
 
   onGenreChange(filterOption) {
     this.filterGenre = filterOption;
@@ -46,5 +54,7 @@ export class AlbumListComponent {
       new Album(name, artist, price, genre)
     );
   }
+
+
 
 }

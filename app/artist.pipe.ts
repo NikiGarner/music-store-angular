@@ -9,7 +9,6 @@ import {Album} from './album.model';
 export class ArtistPipe implements PipeTransform {
   transform(input: Album[], args) {
     var artistName = args[0];
-    console.log(args);
     if (artistName === "all" ) {
       return input;
     } else {
